@@ -45,7 +45,6 @@ Run one test file at a time while you work (`make test FILE=...` leaves the cove
 runs them all with the coverage, which stays at **100%** (`--cov-fail-under=100`): cover the code with tests, and never
 lower the threshold or widen the omissions to get green.
 
-
 ## Releases
 
 A release is a tag. Bump the version in `pyproject.toml` and `kubescope-extension.toml`, move the **[Unreleased]**

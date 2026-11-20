@@ -1,4 +1,5 @@
-"""Color themes for KubeScope: the themes of the app that are not Light and Dark."""
+"""Color themes for KubeScope: the themes of the app that are not Light and
+Dark."""
 
 import json
 from pathlib import Path

@@ -1,4 +1,5 @@
-"""The extension in the window of the app, with the real services lent to it."""
+"""The extension in the window of the app, with the real services lent to
+it."""
 
 import time
 
