@@ -1,0 +1,73 @@
+[project]
+name = "kubescope-themes"
+version = "1.0.0"
+description = "Color themes for KubeScope: Abyss, Midnight, Monokai, Solarized and more"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Danilo Carolino", email = "danilogcarolino@gmail.com" }]
+requires-python = ">=3.15,<3.16"
+# It is written against the SDK and nothing else of KubeScope (a test keeps it
+# so): the app gives it what it needs when it runs it. Qt is what its page is
+# drawn with.
+dependencies = [
+    "kubescope-sdk>=1.1.0,<2.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    # only the tests need the app: they run her in its window and lend her its
+    # real services
+    "kubescope>=1.12.0",
+    "pre-commit>=4.7.0",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pyright>=1.1.414",
+    "ruff>=0.17.6",
+]
+
+[tool.uv.sources]
+# while the extension API is unstable (api = "0"), develop against a checkout of
+# the app next to this one
+kubescope = { path = "../kubescope", editable = true }
+kubescope-sdk = { git = "https://github.com/dcotecnologia/kubescope-sdk", branch = "main" }
+
+[tool.setuptools.package-data]
+"kubescope.theme_pack" = ["themes/*.json"]
+
+[tool.setuptools.packages.find]
+# `kubescope` is a namespace shared with the app and the SDK: there is no
+# __init__.py in it
+where = ["src"]
+namespaces = true
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = "--import-mode=importlib --cov=kubescope.theme_pack --log-level=WARN --strict-markers --tb=short --cov-report=term-missing --cov-report=xml --cov-fail-under=100 --cov-config=pyproject.toml"
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+precision = 2
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["**/__pycache__"]
+pythonVersion = "3.15"
+venvPath = "."
+venv = ".venv"
+
+[tool.ruff]
+line-length = 88
+target-version = "py315"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

@@ -1,0 +1,107 @@
+name: Release
+
+# Push a tag like v1.0.0 to publish a GitHub release. The tag must be the version
+# of pyproject.toml and of kubescope-extension.toml, and the changelog must
+# have a section for it.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to build, such as v1.0.0 (nothing is published)
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  APP_REF: dev/v2
+  QT_QPA_PLATFORM: offscreen
+
+defaults:
+  run:
+    working-directory: ext
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: ext
+
+      - uses: actions/checkout@v7
+        with:
+          repository: dcotecnologia/kubescope
+          ref: ${{ env.APP_REF }}
+          path: kubescope
+
+      - name: Install Qt runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3 libglib2.0-0
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.15"
+
+      - name: The tag is the version of the package and of the manifest
+        id: version
+        run: |
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          version="${tag#v}"
+          package=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          manifest=$(python3 -c "import tomllib; print(tomllib.load(open('kubescope-extension.toml','rb'))['version'])")
+          test "$version" = "$package" || { echo "The tag $tag is not the version $package of pyproject.toml"; exit 1; }
+          test "$version" = "$manifest" || { echo "The tag $tag is not the version $manifest of the manifest"; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Lint and test
+        run: |
+          uv run ruff check .
+          uv run pyright
+          uv run pytest -q
+
+      - name: What the changelog says about this version
+        id: changelog_reader
+        uses: dcotecnologia/keepmeachangelog-action@v1
+        with:
+          validation_depth: 10
+          version: ${{ steps.version.outputs.version }}
+          path: ext/CHANGELOG.md
+
+      # KubeScope installs what it recommends only if the files are the pinned ones:
+      # this is the hash to pin for this tag, the way the app computes it
+      - name: The hash KubeScope pins for this tag
+        id: pin
+        run: |
+          hash=$(uv run python -c "from pathlib import Path; from kubescope.extensions.archive import tree_digest; print(tree_digest(Path('.')))")
+          echo "hash=$hash" >> "$GITHUB_OUTPUT"
+
+      - name: Write the notes of the release
+        working-directory: ${{ github.workspace }}
+        run: |
+          cp "${{ steps.changelog_reader.outputs.changes_file }}" "$RUNNER_TEMP/notes.md"
+          {
+            echo
+            echo "---"
+            echo
+            echo "To install: **Settings → Extensions → Install from GitHub...** and type \`${{ github.repository }}\`."
+            echo
+            echo "Pin for KubeScope (tag \`v${{ steps.version.outputs.version }}\`, content sha256 of the files of the tag):"
+            echo
+            echo "\`${{ steps.pin.outputs.hash }}\`"
+          } >> "$RUNNER_TEMP/notes.md"
+
+      - uses: softprops/action-gh-release@v3
+        if: github.event_name == 'push'
+        with:
+          body_path: ${{ runner.temp }}/notes.md
+          # v1.1.0-rc1 is a pre-release: GitHub does not make it the latest release
+          prerelease: ${{ contains(github.ref_name, '-') }}

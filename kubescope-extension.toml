@@ -1,0 +1,8 @@
+id = "kubescope.themes"
+name = "Themes"
+version = "1.0.0"
+api = "0"
+entry = "kubescope.theme_pack:activate"
+description = "Thirteen color themes for KubeScope, light and dark: Abyss, Dark Modern, High Contrast, Light Modern, macOS Dark and Light, Midnight, Monokai, Quiet Light, Sepia, Solarized Dark and Light, and Tomorrow Night Blue."
+author = "DCO Tecnologia"
+permissions = ["ui.theme"]
