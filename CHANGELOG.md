@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The `kubescope-extension.toml` of this extension: the manifest says what is for production (`production = []`: only the manifest, `LICENSE`, `README.md` and `src`) by @danilogco
+
 ## [1.0.0] - 2026-11-20
 
 ### Added
