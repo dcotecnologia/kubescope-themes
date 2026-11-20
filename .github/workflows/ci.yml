@@ -15,7 +15,7 @@ permissions:
 env:
   # while the extension API is unstable, the tests run the extension in the window
   # of the app, which is a development dependency (see pyproject.toml)
-  APP_REF: dev/v2
+  APP_REF: main
   QT_QPA_PLATFORM: offscreen
 
 defaults:

@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 env:
-  APP_REF: dev/v2
+  APP_REF: main
   QT_QPA_PLATFORM: offscreen
 
 defaults:
