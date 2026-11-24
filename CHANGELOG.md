@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-24
+
+### Changed
+
+- The macOS Dark and macOS Light themes are more opaque, with the page and the top bar at 98% instead of 90% by @danilogco
+
 ## [1.1.0] - 2026-11-20
 
 ### Changed
@@ -19,6 +25,7 @@ All notable changes to this project are documented here. The format follows
 
 - The color themes of KubeScope that are not Light and Dark as an extension written against the SDK only: Abyss, Dark Modern, High Contrast, Light Modern, macOS Dark and Light, Midnight, Monokai, Quiet Light, Sepia, Solarized Dark and Light, and Tomorrow Night Blue
 
-[Unreleased]: https://github.com/dcotecnologia/kubescope-themes/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/dcotecnologia/kubescope-themes/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/dcotecnologia/kubescope-themes/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/dcotecnologia/kubescope-themes/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/dcotecnologia/kubescope-themes/releases/tag/v1.0.0
