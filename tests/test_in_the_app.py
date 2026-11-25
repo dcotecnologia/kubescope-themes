@@ -4,8 +4,8 @@ it."""
 import time
 
 import pytest
+from kubescope.extensions import testing
 from kubescope.extensions.context import ExtensionContext
-from PySide6.QtWidgets import QApplication
 
 from kubescope import theme
 from kubescope.theme_pack import activate, themes
@@ -15,7 +15,7 @@ from kubescope.theme_pack import activate, themes
 def window(monkeypatch):
     from kubescope import window as window_module
 
-    application = QApplication.instance() or QApplication([])
+    application = testing.application()
     # the window downloads the extensions the app recommends on its first run
     monkeypatch.setattr("kubescope.extensions.defaults.DEFAULTS", ())
     monkeypatch.setattr(window_module, "list_contexts", lambda: ([], None))

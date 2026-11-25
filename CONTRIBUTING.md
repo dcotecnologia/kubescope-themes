@@ -27,6 +27,14 @@ The tests of an extension run it in the window of the app, so the app is a devel
 (`kubescope = { path = "../kubescope", editable = true }`); the extension itself imports only
 `kubescope.sdk` and its own package, and a test keeps it so.
 
+## No Qt in an extension
+
+An extension imports nothing from `PySide6` or `shiboken6`, in its code or in its tests. Its widgets,
+tables, badges, buttons, dialogs, timers, icons and translations come from `ctx.ui.components` and
+`kubescope.sdk.translate` (see the Components guide of the SDK), and its tests use `kubescope.extensions.testing`.
+A test (`tests/test_independence.py`) fails on such an import. If the look or a service you need is not
+there, add it to the SDK and to `kubescope/extensions/components.py` of the app first.
+
 ## Workflow
 
 1. Create a branch from `main`. Do not commit to `main` directly.
